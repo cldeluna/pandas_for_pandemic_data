@@ -89,27 +89,31 @@ def df_from_csv(path):
 def df_check(dfc, note="DATA FRAME CHECK", debug=False):
 
     print(f"\n\n====================  DATA FRAME CHECK ====================")
-    print(f"====================  {note} ====================")
-    print(f"\nDescribe the Data Frame: \n{dfc.describe()}")
-    print(f"\nData Frame Info: \n{dfc.info()}")
-    print(f"\nShape of the Data Frame: \n{dfc.shape}")
+    print(f"====================  {note} ====================\n")
+    print(f"\n== Describe the Data Frame: \n{dfc.describe()}")
+    print(f"\n== Shape of the Data Frame: \n{dfc.shape}")
 
-    print(f"\nSAMPLE (first and last 5 rows):")
+    print(f"\n== SAMPLE (first and last 5 rows):")
     print(dfc.head())
     print(dfc.tail())
 
-    print(f"\nColumn Headings of the data set: \n{dfc.columns.values}\n")
+    print(f"\n== Column Headings of the data set: \n{dfc.columns.values}\n")
 
-    print(f"\nColumn default data type: \n{dfc.dtypes}\n")
+    print(f"\n== Column default data type: \n{dfc.dtypes}\n")
 
     # Whitespace Check on Country_Region
     # _ = df.loc[df.Country_Region.str.contains(r'\s$', regex=True)]
 
-    print("\nMissing values in each column")
+    print("\n== Number of MISSING values in each column:")
     print(dfc.isna().sum())
-    print()
-    print("\nSum")
-    print(dfc.sum())
+    # print()
+    # print("\nSum all the columns in the Data Frame")
+    # print(dfc.sum())
+
+    print("\n== Sum just the numeric columns in the Data Frame:")
+    numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+    dfc_num = dfc.select_dtypes(include=numerics)
+    print(dfc_num.sum())
 
     # print("\nValue Counts")
     # print("\nCountry_Region")
@@ -136,130 +140,97 @@ def main():
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.max_rows', None)
 
-    if arguments.specific_day:
-        day = arguments.specific_day
+    # ### DEFAULT WHO file is analyzed by default
+
+    # If a new file path and name are provided with the -w option
+    # then that file will be loaded into a Pandas data frame and analyzed
+    # otherwise the default file from 6 April 2020 will which is included in the
+    # repository will be analyzed.
+    if arguments.who_data_file:
+        who_default_datafile = arguments.who_data_file
     else:
-        # Look for the most recent file - Start with Todays file
-        day = get_todays_date_utc()
+        who_default_datafile = "WHO-COVID-19-global-data.csv"
 
-    print(f"\n=========== Looking for data file: {day}")
-    found_file = find_file_in_dir(arguments.daily_reports_folder, f"{day}.csv")
+    df_who = df_from_csv(who_default_datafile)
+    df_check(df_who, f"WHO Data Frame from {who_default_datafile}")
 
-    if found_file:
-        print(f"\nFound requested file is {found_file} with name {found_file.name}")
-    else:
-        yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1)
-        ytdy = yesterday.strftime("%m-%d-%Y")
-        print(f'File {day} was not found. Lets look for the previous days file {ytdy} of type {yesterday}.')
-        found_file = find_file_in_dir(arguments.daily_reports_folder, f"{ytdy}.csv")
-        print(f"\nFound calculated file is {found_file} with name {found_file.name}")
+    #######################################################################
+    ## Todays CSSE JHU data set
+    # This section of the script will look for todays daily file for analysis
+    # If todays is not found it will automaticaly look for yesterdaysn
+    # Important:  The Path to the https://github.com/CSSEGISandData/COVID-19.git repository must be set.
+    # It is assumed that the CSSE JHU repo will be cloned directly under this repository
 
-    # df = df_from_csv(found_file.path)
-    #
-    #
-    # df_check(df, f"Data for {day}")
+    if arguments.today_csse:
 
-    # print(df)
+        if arguments.specific_day:
+            day = arguments.specific_day
+        else:
+            # Look for the most recent file - Start with Todays file
+            day = get_todays_date_utc()
 
-    # print(df[['Province_State', 'Country_Region', 'Last_Update','Confirmed', 'Deaths', 'Recovered', 'Active']])
-    # print(df[['Combined_Key', 'Confirmed', 'Deaths', 'Recovered', 'Active']])
-    #
-    #
-    # print("\nFind null and empty values")
-    #
-    # print(df[df.isnull()])
-    # print(df[df.isna()])
-    #
-    # print(df[ (df.notnull()) & (df!=u'') ])
-    #
-    #
-    # # Null Columns
-    # print("\nNull Columns in Full Data Frame")
-    # null_columns = df.columns[df.isnull().any()]
-    # print(df[null_columns].isnull().sum())
-    #
-    # print(df[df.isnull().any(axis=1)][null_columns].head())
+        print(f"\n=========== Looking for data file: {day}")
+        found_file = find_file_in_dir(arguments.daily_reports_folder, f"{day}.csv")
 
+        if found_file:
+            print(f"\nFound requested file is {found_file} with name {found_file.name}")
+        else:
+            yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1)
+            ytdy = yesterday.strftime("%m-%d-%Y")
+            print(f'File {day} was not found. Lets look for the previous days file {ytdy} of type {yesterday}.')
+            found_file = find_file_in_dir(arguments.daily_reports_folder, f"{ytdy}.csv")
+            print(f"\nFound calculated file is {found_file} with name {found_file.name}")
+            day = ytdy
 
-    #
-    print(f"\n========= Country Data for {arguments.country_region}")
+        df = df_from_csv(found_file.path)
+        df_check(df, f"Data for {day}")
 
-    # df_country_bool = df['Country_Region'] == arguments.country_region
-    # df_country = df[df_country_bool]
-    # # print(df_country[['Combined_Key', 'Confirmed', 'Deaths', 'Recovered', 'Active']])
-    # df_check(df_country, f"{arguments.country_region}")
+        if arguments.country_region:
+            print(f"\n\n========= Country Data for {arguments.country_region}")
+            # Mask Data Frame
+            df_country_bool = df['Country_Region'] == arguments.country_region
+            df_country = df[df_country_bool]
+            df_check(df_country, f"{arguments.country_region}")
 
+        if arguments.province_state:
+            print(f"\n\n========= State/Province Data for {arguments.province_state} ")
+            df_country_state_bool = df['Province_State'] == arguments.province_state
+            df_country_state = df[df_country_state_bool]
+            df_check(df_country, f"{arguments.province_state}")
 
-    # Null Columns
-    # print("\nNull Columns")
-    # null_columns = df_country.columns[df_country.isnull().any()]
-    # print(df_country[null_columns].isnull().sum())
-    #
-    # print(df_country[df_country.isnull().any(axis=1)][null_columns].head())
-
-    #
-    print(f"\n========= State/Province Data for {arguments.province_state} ")
-    # df_country_state_bool = [df['Country_Region'] == 'US' & df['Province_State'] == 'California']
-    # df_country_state_bool = df['Province_State'] == arguments.province_state
-    # df_country_state = df[df_country_state_bool]
-    # df_check(df_country, f"{arguments.province_state}")
-    #
-
-    # FIPS
-
-    if arguments.fips:
-        print(f"\n========= FIPS County {arguments.fips} ")
-        df_fips_bool = df['FIPS'] == int(arguments.fips)
-        df_fips = df[df_fips_bool]
-        df_check(df_fips, f"{arguments.fips}")
+        # FIPS
+        if arguments.fips:
+            print(f"\n\n========= FIPS County {arguments.fips} ")
+            df_fips_bool = df['FIPS'] == int(arguments.fips)
+            df_fips = df[df_fips_bool]
+            df_check(df_fips, f"{arguments.fips}")
 
 
 
-    # print(df_country_state.head())
-    # print(df_country_state[['Combined_Key', 'Confirmed', 'Deaths', 'Recovered', 'Active']])
-    #
-    # df_ca = df_country_state[['Combined_Key', 'Confirmed', 'Deaths', 'Recovered', 'Active']]
-    #
-    # print(df_ca.sum())
+    if arguments.new_york_times:
+        print(f"\n\n========= New York Times Data file from NYT GitHub Repo ")
+        ny_state_data = os.path.join(".", "covid-19-data", "us-states.csv")
+        dfnystate = df_from_csv(ny_state_data)
+        df_check(dfnystate, f"New York Times Data")
 
 
-    # California	471,658	268,189
-    # https://www.statista.com/statistics/241581/births-and-deaths-in-the-us-by-state/
-
-    # ca_2017_deaths = 268189
-    # print(f"\nIn California there were {ca_2017_deaths} deaths in 2017.  That represents approximately "
-    #       f"{int(ca_2017_deaths/12)} deaths per month.")
-    #
-    # print(f"2017 Deaths - Source https://www.statista.com/statistics/241581/births-and-deaths-in-the-us-by-state/ ")
-
-    # load_flu_rates_2018_19()
-
-
-    # ny_state_data = os.path.join(".", "covid-19-data", "us-states.csv")
-    #
-    # dfnystate = df_from_csv(ny_state_data)
-    # df_check(dfnystate, f"New York times Data")
-
-    who_data_file = os.path.join("WHO-COVID-19-global-data.csv")
-    df_who = df_from_csv(who_data_file)
-    df_check(df_who, f"WHO Data Frame")
 
 # Standard call to the main() function.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Script Description",
                                      epilog="Usage: ' python todays_totals' ")
 
-    parser.add_argument('-d', '--daily_reports_folder', help='csse_covid_19_daily_reports Directory',
+    parser.add_argument('-d', '--daily_reports_folder',
+                        help='Set path to CSSE Dailty Report folder csse_covid_19_daily_reports.  '
+                             'Default is ./COVID-19/csse_covid_19_data/csse_covid_19_daily_reports',
                         action='store',
-                        default='/Users/claudia/Documents/clones/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports')
+                        default='./COVID-19/csse_covid_19_data/csse_covid_19_daily_reports')
 
-    parser.add_argument('-c', '--country_region', help='Filer on Country Region. Default is "US" ',
-                        action='store',
-                        default='US')
+    parser.add_argument('-c', '--country_region', help='Filer on 2 letter Country Region. Example: "US" ',
+                        action='store')
 
-    parser.add_argument('-p', '--province_state', help='Filer on Province State. Default is "California" ',
-                        action='store',
-                        default='California')
+    parser.add_argument('-p', '--province_state', help='Filer on Province State. Example: "California" ',
+                        action='store')
 
     parser.add_argument('-s', '--specific_day', help='File for specific day. Example:  04-01-2020',
                         action='store')
@@ -267,5 +238,13 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--fips', help='FIPS County Code Example: 06037 (Los Angeles County)',
                         action='store')
 
+    parser.add_argument('-w', '--who_data_file', help='Analyze the WHO data file provided',
+                        action='store_true', default=False)
+
+    parser.add_argument('-t', '--today_csse', help='Analyze todays file in the CSSE repo',
+                        action='store_true', default=False)
+
+    parser.add_argument('-n', '--new_york_times', help='Analyze the New York Times Data',
+                        action='store_true', default=False)
     arguments = parser.parse_args()
     main()
