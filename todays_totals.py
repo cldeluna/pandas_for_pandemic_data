@@ -107,8 +107,8 @@ def df_check(dfc, note="DATA FRAME CHECK", debug=False):
     print("\n== Number of MISSING values in each column:")
     print(dfc.isna().sum())
     # print()
-    # print("\nSum all the columns in the Data Frame")
-    # print(dfc.sum())
+    print("\nSum all the columns in the Data Frame")
+    print(dfc.sum())
 
     print("\n== Sum just the numeric columns in the Data Frame:")
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -140,6 +140,7 @@ def main():
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.max_rows', None)
 
+    #######################################################################
     # ### DEFAULT WHO file is analyzed by default
 
     # If a new file path and name are provided with the -w option
@@ -153,6 +154,14 @@ def main():
 
     df_who = df_from_csv(who_default_datafile)
     df_check(df_who, f"WHO Data Frame from {who_default_datafile}")
+
+    if arguments.country_region:
+        print(f"\n\n========= Country Data for {arguments.country_region}")
+        # Mask Data Frame
+        df_country_bool = df_who['Country'] == arguments.country_region
+        df_country = df_who[df_country_bool]
+        df_check(df_country, f"{arguments.country_region}")
+
 
     #######################################################################
     ## Todays CSSE JHU data set
@@ -196,7 +205,7 @@ def main():
             print(f"\n\n========= State/Province Data for {arguments.province_state} ")
             df_country_state_bool = df['Province_State'] == arguments.province_state
             df_country_state = df[df_country_state_bool]
-            df_check(df_country, f"{arguments.province_state}")
+            df_check(df_country_state, f"{arguments.province_state}")
 
         # FIPS
         if arguments.fips:
@@ -206,7 +215,7 @@ def main():
             df_check(df_fips, f"{arguments.fips}")
 
 
-
+    #######################################################################
     if arguments.new_york_times:
         print(f"\n\n========= New York Times Data file from NYT GitHub Repo ")
         ny_state_data = os.path.join(".", "covid-19-data", "us-states.csv")
