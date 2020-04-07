@@ -1,6 +1,6 @@
 # Using Pandas to look at Pandemic Data
 
-The script and supporting files in this repository are intended to show how the Python Pandas module can be used to analyze data, specifically COVID-19 data.
+The script and supporting files in this repository are intended to show how the [Python Pandas module](https://pandas.pydata.org/) can be used to analyze data, specifically COVID-19 data.
 
 I am going to recommend 3 data sets to "investigate":
 
@@ -24,7 +24,7 @@ This CSV file will need clean up.  Remove spaces from column titles.  Some rows 
 
 ##John Hopkins University (JHU) Center for Systems Science and Engineering (CSSE) Data
 
-The [John Hopikns Unversity CSSE](https://systems.jhu.edu/) data is widely used in the media and either drives or is incorporated into many other data sets.  More importantly for our purposes,  this wonderful instisituion of higher learning makes the raw data available on a pulbic repository (GitHub).
+The [John Hopikns Unversity CSSE](https://systems.jhu.edu/) data is widely used in the media and either drives or is incorporated into many other data sets.  More importantly for our purposes,  this wonderful institution of higher learning makes the raw data available on a public repository (GitHub).
 
 [CSSEGISandData on GitHub](https://github.com/CSSEGISandData)
 
@@ -37,7 +37,7 @@ git clone https://github.com/cldeluna/pandas_for_pandemic_data.git
 # Change into the pands_for_pandemic_data Repository
 cd pandas_for_pandemic_data
 
-# Clones the John Hopikns Unversity CSSE Data
+# Clones the John Hopkins University CSSE Data
 git clone https://github.com/CSSEGISandData/COVID-19.git
 
 # Refresh the JHU Data
@@ -46,7 +46,7 @@ git pull
 ```
 
 ```
-# Exammple of refreshing the JHU repository
+# Example of refreshing the JHU repository
 Claudias-iMac:COVID-19 claudia$ git pull
 remote: Enumerating objects: 148, done.
 remote: Counting objects: 100% (148/148), done.
@@ -89,7 +89,7 @@ The New York Times has also shared their data.   This repository only contains d
 
 - US County Level data
 
-They do a good job of keeing the data set very clean.  Its all numeric and so far I've not seen any missing data which is rare for any data set.
+They do a good job of keeping the data set very clean.  Its all numeric and so far I've not seen any missing data which is rare for any data set.
 
 ```
 == Number of MISSING values in each column:
@@ -103,7 +103,7 @@ dtype: int64
 
 [New York Times US Data GitHub Repository](https://github.com/nytimes/covid-19-data)
 
-I took the same apporach with this repository as I did for the JHU data.   I've cloned the repository so that it sits as a subdirectory in my pandas_for_pandemic_data folder and I refresh it every day. 
+I took the same approach with this repository as I did for the JHU data.   I've cloned the repository so that it sits as a subdirectory in my pandas_for_pandemic_data folder and I refresh it every day. 
 
 
 
@@ -134,10 +134,10 @@ The various options let you control which data set you want to investigate and f
 | python todays_totals.py -h                                   | Display all the options available (Help)                     |
 | python todays_totals.py                                      | <br/>WHO Data<br/>Without any options, the script will load the local WHO data file from 6 April into a Pandas Data Frame and run some commands to investigate the data.<br/>Reminder: If you download a fresh WHO CSV file please note the updates I list above so that you can cleanly import the CSV into a Data Frame. |
 | python todays_totals.py -c "MX"                              | <br/>WHO Data Filtered for a Specific Country<br/><br/>Note: use the 2 letter country code as an argument with the -c option |
-| python todays_totals.py -t                                   | John Hopikns Unversity CSSE Data<br/><br/>The -t option will look for todays daily log file in the JHU CSSE (remember to clone the repository) |
-| python todays_totals.py -t -c "Mexico"                       | John Hopikns Unversity CSSE Data<br/><br/>The -t -c "country or region" option will let you filter for a country |
-| python todays_totals.py -t -s "California"                   | John Hopikns Unversity CSSE Data<br/><br/>The -t -s "state" option filters the JHU data set for a state or province |
-| python todays_totals.py -t -f 06037                          | John Hopikns Unversity CSSE Data<br/>  <br/>The -t -f  [FIPS](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697) option filters the JHU data set for a FIPS county code.   Note: FIPS code 06037 is for Los Angeles County |
+| python todays_totals.py -t                                   | John Hopkins University CSSE Data<br/><br/>The -t option will look for todays daily log file in the JHU CSSE (remember to clone the repository) |
+| python todays_totals.py -t -c "Mexico"                       | John Hopkins University CSSE Data<br/><br/>The -t -c "country or region" option will let you filter for a country |
+| python todays_totals.py -t -s "California"                   | John Hopkins University CSSE Data<br/><br/>The -t -s "state" option filters the JHU data set for a state or province |
+| python todays_totals.py -t -f 06037                          | John Hopkins University CSSE Data<br/>  <br/>The -t -f  [FIPS](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697) option filters the JHU data set for a FIPS county code.   Note: FIPS code 06037 is for Los Angeles County |
 | python todays_totals.py -n                                   | New York Times Data<br/><br/>US Totals Only for the full NY Times data set<br/>(remember to clone the repository) |
 | python todays_totals.py -n -f 6<br/>or<br/>python todays_totals.py -n -p "California" | New York Times Data<br/><br/><br/>This data set has both "state" and "fips" but fips represents [FIPS State Code](Federal Information Processing Standard state code) so in this example 6 is the FIPS state code.  This should get you exactly the same data as ** python todays_totals.py -n -p "California"** |
 

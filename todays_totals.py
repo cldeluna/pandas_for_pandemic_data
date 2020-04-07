@@ -188,6 +188,7 @@ def main():
             df_country_state_bool = df['Province_State'] == arguments.province_state
             df_country_state = df[df_country_state_bool]
             df_check(df_country_state, f"{arguments.province_state}")
+            # print(df_country_state[['Province_State','FIPS','Last_Update', 'Confirmed', 'Deaths', 'Recovered', 'Active']])
 
         # FIPS
         if arguments.fips:

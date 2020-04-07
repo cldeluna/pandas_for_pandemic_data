@@ -17,7 +17,7 @@ It's always hard to count at any sufficiently large scale so from the start this
 
 When we do have numbers, their quality and provenance aside, they are often presented to drive agendas.
 
-I guess thats always been true but never at such an egregious level and when the stakes could be so high.
+I guess that has always been true but never at such an egregious level and when the stakes could be so high.
 
 - 56% percent of Californians will be infected in the next 8 weeks?
 - 50% of New Yorkers will be infected?
@@ -64,22 +64,19 @@ The rest of my family is in Mexico and to date I can't find anything better than
 
 #### What to count
 
-As I tuned in to the conversations around the CSSE JHU data set, it became clear that there is much ongoing discussion about what to count and how to identify things.  The data started out with 'Province_State', 'Country_Region', 'Last_Update' ,'Latitude', 'Longitude', 'Confirmed', 'Deaths', and 'Recovered'. In mid March 'FIPS' and 'Admin2' were added to track county information in the US.   Sadly the data set uses "US" for the US data but country names elsewhere rather than standardizing on the [ISO 3166  country codes](https://www.iban.com/country-codes).  That makes it harder to join data sets should you need to.
+As I tuned in to the conversations around the CSSE JHU data set, it became clear that there is much ongoing discussion about what to count and how to identify things.  The data started out with 'Province_State', 'Country_Region', 'Last_Update' ,'Latitude', 'Longitude', 'Confirmed', 'Deaths', and 'Recovered'. In mid March 'FIPS' and 'Admin2' were added to track county information in the US.    As of this writing, 'Recovered' is no longer being tracked because its very difficult to do so.  Sadly the data set uses the value "US" in 'Country_Region' but full country names elsewhere rather than standardizing on the [ISO 3166  country codes](https://www.iban.com/country-codes).  That makes it harder to join data sets should you need to.
 
 The CSSE JHU data set data set provides this data:
 
-Column Headings of the data set: 
 ['FIPS' 'Admin2' 'Province_State' 'Country_Region' 'Last_Update' 'Lat'
  'Long_' 'Confirmed' 'Deaths' 'Recovered' 'Active' 'Combined_Key'] *<< this represents a list of column names*
 
-The New York Times provides a subset of the John Hopinks data.
+The New York Times provides a subset of the John Hopkins data.
 
-Column Headings of the data set: 
 ['date' 'state' 'fips' 'cases' 'deaths']
 
 WHO Data set (which needs clean up to be read into Pandas)
 
-Column Headings of the data set: 
 ['day' 'Country' 'CountryName' 'Region' 'Deaths' 'CumulativeDeaths'
  'Confirmed' 'CumulativeConfirmed']
 
@@ -96,7 +93,7 @@ What is noticeably missing is any data on testing in the US.
 
 [Worldometers](https://www.worldometers.info) is counting critical cases as well as totals and new (additional from previous day) so we can map out trends.   Critical cases speaks directly to the medical infrastructure question and so is key, in my mind.
 
-The [French Department of Public Health](https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/infection-a-coronavirus/articles/infection-au-nouveau-coronavirus-sars-cov-2-covid-19-france-et-monde) is tracking much more hospitalization data although there is some debate right now around how they are counting confirmed cases and it may be that the confirmed number actually contains confirmed and suspected cases.   They specifically track at risk categories (the elderly and those in care facilities).
+The [French Department of Public Health](https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/infection-a-coronavirus/articles/infection-au-nouveau-coronavirus-sars-cov-2-covid-19-france-et-monde) is tracking much more hospitalization data although there is some debate right now around how they are counting confirmed cases and it may be that the confirmed number actually contains confirmed and suspected cases.   They specifically track "at risk" communities (the elderly and those in care facilities).
 
 ![infog_coronavirus_060420](./images/infog_coronavirus_060420.jpg)
 
@@ -106,7 +103,7 @@ So the current debate about the numbers from France highlights this next issue. 
 
 Lets take our most predominant measure, "deaths".
 
-Looking into that number is uncomfortable and not just for the obvious reasons.   How a COVID19 death is counted *varies wildly*.   Everyone is counting differently, not only within organizations but across the globe, making it even more difficult to understand what is happening.  If I die from a pre-existing condition but die while infected with COVID-19 do we count that as a COVID-19 death?  Its far more nuanced than I could have ever imagined.  See this excellent article which illustrates the disparity and complexity in counting deaths: 
+Looking into that number is uncomfortable and not just for the obvious reasons.   How a COVID19 death is counted *varies wildly*.   Everyone is counting differently, not only within organizations but across the globe, making it even more difficult to understand what is happening.  If I die from a pre-existing condition but die while infected with COVID-19 do we count that as a COVID-19 death?  It is far more nuanced than I could have ever imagined.  See this excellent article which illustrates the disparity and complexity in counting deaths: 
 [Coronavirus: Why death and mortality rates differ](https://www.bbc.com/future/article/20200401-coronavirus-why-death-and-mortality-rates-differ).
 
 I believe this complexity exists, to varying degrees, for every data category tracked.
@@ -194,7 +191,7 @@ Are these comparisons valid?  Are the COVID19 deaths reported in addition to the
 
 Of the deaths, what percentage had underlying conditions?
 
-## Final thoughts
+## Final Thoughts
 
 There  is no way to look at this and not conclude that **we don't have all the data**.  I understand "*I don't know*" is not very re-assuring but neither is an incomplete picture, or guesswork presented as anything other than that.  
 
@@ -202,6 +199,6 @@ I'll take "*here are the numbers we have today and here are the ones we are work
 
 I am in no way an expert in any of this but I understand numbers and trends and absent numbers without agenda, source, or speculation, I'll try to figure it out on my own.   I think looking at the data has helped me to appreciate the issues and ask better questions.  Isn't that what data is all about?
 
-If you want to look at the data yourself, I've put together a small repository to get you started using Python and Pandas.
+If you want to look at the data yourself, as I mentioned,  I've put together a small repository to get you started using Python and Pandas.
 
 [Using Pandas to look at Pandemic Data](https://github.com/cldeluna/pandas_for_pandemic_data) on GitHub
