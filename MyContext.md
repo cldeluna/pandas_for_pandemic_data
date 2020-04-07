@@ -6,13 +6,18 @@ Often numbers can help with uncertainty but sadly the numbers, as they are being
 
 Since one of my goals during this period of social distancing is to improve my Python skills, what better way to do that (and improve my Pandas skills as well) than to look at the numbers myself.
 
+| Sidebar                                                                                                                                                                              |     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| If you can do without yet another persons take on our current situation and want to get right to the numbers, here is the link to the repository I've put together to check numbers: |     |
+| [Using Pandas to look at Pandemic Data](https://github.com/cldeluna/pandas_for_pandemic_data) on GitHub                                                                              |     |
+
 ## The numbers are suspect
 
-It's always hard to count at any sufficiently large scale.   So we have that to contend with.  How are cities rolling up data to their counties, the counties to the states, the states to the federal level?  Throw in political agendas and one wonders that we have any numbers at all.
+It's always hard to count at any sufficiently large scale so from the start this is a non-trivial problem.  How are cities rolling up data to their counties, the counties to the states, the states to the federal level?  Throw in political agendas and one wonders that we have any numbers at all.
 
 When we do have numbers, their quality and provenance aside, they are often presented to drive agendas.
 
-I guess thats always been true but never at such an egregious level and when the stakes could be very high.
+I guess thats always been true but never at such an egregious level and when the stakes could be so high.
 
 - 56% percent of Californians will be infected in the next 8 weeks?
 - 50% of New Yorkers will be infected?
@@ -25,7 +30,7 @@ Different organizations are counting different things and counting those things 
 
 #### It all starts with the data
 
-When I decided to use Pandas and Python to look at this data I had to start with getting data.  That was an eye opener.
+When I decided to use Pandas and Python to look at this data, the first step was actually getting some data.  That effort was an eye opener.
 
 [Worldometers](https://www.worldometers.info) had some wonderful data, all sources identified, and nicely put together but I could not find a way to get to raw data.  I suspect that it is available through their subscription service and kudos to [Worldometers](https://www.worldometers.info) as they are not taking this opportunity, unlike so many others, to drive up subscriptions.  I didn't want to do screen scraping so I decided to use the Worldometers data for comparison.
 
@@ -33,7 +38,7 @@ Eventually I stumbled on to the source of the data that is often cited in the me
 
 Their [CSSE JHU Dashboard](https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6) is very good and **major kudos to them** for making the raw data set publicly available [on GitHub](https://github.com/CSSEGISandData)!  They started sharing this data in early February, 2020.  This is a thankless and daunting task undertaken by JHU's CSSE. This becomes all the more clear if you look at the issues log in the GitHub repository.  The (mostly) constructive collaborative effort to update, correct, keep the data set consistent, add data to the data set for more functionality (yes..two mutually exclusive things) is extreme.  As of this writing, almost 900 people are actively watching the repository, over 10,000 people have forked it, and it has almost 20,000 stars.
 
-Many have taken this data and manipulated it to share their own work.
+Many have taken this data and manipulated it to fix issues and share their own work.
 
 - [JHU Region Mapper](https://github.com/WolfgangFahl/jhuregionmapper)
 - [Current COVID-19 Statistics](https://track-coronavir.us/)
@@ -50,7 +55,7 @@ Other (raw) data is available from:
   - [European data in JSON!!!](https://opendata.ecdc.europa.eu/covid19/casedistribution/json/)
 - [New York Times US Data GitHub Repository](https://github.com/nytimes/covid-19-data)
 
-I'm in California so I'm very interested in data and it looks like the California Department of Public Health is doing a good job of sharing the data in machine consumable formats!
+I'm in California so I'm very interested in California data and it looks like the California Department of Public Health is doing a good job of sharing the data in machine consumable formats!
 
 - [California COVID-19 Hospital Data and Case Statistics](https://data.chhs.ca.gov/dataset/california-covid-19-hospital-data-and-case-statistics)
   - Check out to see what your Department of Public Health has to offer in terms of raw data
@@ -78,41 +83,37 @@ Column Headings of the data set:
 ['day' 'Country' 'CountryName' 'Region' 'Deaths' 'CumulativeDeaths'
  'Confirmed' 'CumulativeConfirmed']
 
-So basically everyone is tracking, at a minimum, by day:
+So basically everyone is tracking, at a minimum:
 
 - Country
 - Regional info (State, County, Province, etc.)
 - Deaths
 - Confirmed
 
-All over time. 
+All over time (typically by day). 
 
 What is noticeably missing is any data on testing in the US.
 
-[Worldometers](https://www.worldometers.info) is counting critical cases as well as totals and new so we can map out trends.   Critical cases speaks directly to the medical infrastructure question and so is key, in my mind.
+[Worldometers](https://www.worldometers.info) is counting critical cases as well as totals and new (additional from previous day) so we can map out trends.   Critical cases speaks directly to the medical infrastructure question and so is key, in my mind.
 
 The [French Department of Public Health](https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/infection-a-coronavirus/articles/infection-au-nouveau-coronavirus-sars-cov-2-covid-19-france-et-monde) is tracking much more hospitalization data although there is some debate right now around how they are counting confirmed cases and it may be that the confirmed number actually contains confirmed and suspected cases.   They specifically track at risk categories (the elderly and those in care facilities).
 
 ![infog_coronavirus_060420](./images/infog_coronavirus_060420.jpg)
 
-
-
 #### How we count it
 
 So the current debate about the numbers from France highlights this next issue.    How are the counts calculated?  
 
-Lets take our most predominant measure, Deaths.
+Lets take our most predominant measure, "deaths".
 
-Looking into that number is uncomfortable and not just for the obvious reasons.   How a COVID19 death is counted *varies wildly*.   Everyone is counting differently, not only within organizations in the US but across the globe, making it even more difficult to understand what is happening.  If I die from a pre-existing condition but die while infected with COVID-19 do we count that as a COVID-19 death?  Its far more nuanced that I could have ever imagined.  See this excellent article which illustrates the disparity and complexity in counting deaths: 
+Looking into that number is uncomfortable and not just for the obvious reasons.   How a COVID19 death is counted *varies wildly*.   Everyone is counting differently, not only within organizations but across the globe, making it even more difficult to understand what is happening.  If I die from a pre-existing condition but die while infected with COVID-19 do we count that as a COVID-19 death?  Its far more nuanced than I could have ever imagined.  See this excellent article which illustrates the disparity and complexity in counting deaths: 
 [Coronavirus: Why death and mortality rates differ](https://www.bbc.com/future/article/20200401-coronavirus-why-death-and-mortality-rates-differ).
 
 I believe this complexity exists, to varying degrees, for every data category tracked.
 
-In addition to how the numbers are calculated, the physical tracking the actual data is a huge undertaking and I've not seen much of that mentioned in the media.   As you saw from my personal example, numbers are available but not in any consistent format.  To look at California, I was able to do a simple download of the data.  To look at data for Mexico I either have to trust data that is machine consumable from other sources or parse the web page that has the data I want myself.   That is why the CSSE JHU data set is so impressive.
+In addition to how the numbers are calculated, the physical tracking of the actual data is a huge undertaking and I've not seen much of that mentioned in the media.   As you saw from my personal example, numbers are available but not in any consistent format.  To look at California, I was able to do a simple download of the data.  To look at data for Mexico I either have to trust data that is machine consumable from other sources or parse the web page that has the data I want myself.   That is why the CSSE JHU data set is so impressive.
 
 These are not "sexy" questions, I realize, and pale in comparison to "how many dead" but they are important ones that don't get much play.
-
-
 
 #### What *should* we be tracking?
 
@@ -157,21 +158,19 @@ For example, in 2018, there were:
   - 7,419 beds categorized as "Other Intensive Care" (assuming we need most of the other)
 
 | [Medical-Surgical   Intensive Care 4 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote4) | 55,663  |
-| ------------------------------------------------------------ | ------- |
-| [Cardiac   Intensive Care 5 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote5) | 15,160  |
-| [Neonatal   Intensive Care 6 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote6) | 22,721  |
-| [Pediatric   Intensive Care 7 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote7) | 5,115   |
-| [Burn   Care 8 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote8) | 1,198   |
-| [Other   Intensive Care 9 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote9) | 7,419   |
-|                                                              |         |
-|                                                              | 107,276 |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| [Cardiac   Intensive Care 5 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote5)          | 15,160  |
+| [Neonatal   Intensive Care 6 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote6)         | 22,721  |
+| [Pediatric   Intensive Care 7 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote7)        | 5,115   |
+| [Burn   Care 8 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote8)                       | 1,198   |
+| [Other   Intensive Care 9 Beds in Community Hospitals](https://www.aha.org/statistics/fast-facts-us-hospitals#footnote9)            | 7,419   |
+|                                                                                                                                     |         |
+|                                                                                                                                     | 107,276 |
 
 This is the kind of data that would allow us to make informed decisions.  
 
-- What are the chances of the virus killing us (broken out by age group and by critical factors)? 
+- What are the chances of the virus killing us (broken out by age group and perhaps some demographics)? 
 - What are the chances of the virus killing us if the appropriate medical care, including medical professionals, tools, and medicine, is not available when we get sick?
-
-
 
 ## Numbers have no context
 
@@ -191,16 +190,18 @@ At a national level, the [CDC and the National Center for Health Statistics](htt
 
 In and of themselves those numbers are not horrifying, but there are questions.
 
-Are these comparisons valid?  Are the COVID19 deaths reported in addition to the expected deaths?
+Are these comparisons valid?  Are the COVID19 deaths reported in addition to the expected deaths?  What is the rate of increase?
 
 Of the deaths, what percentage had underlying conditions?
 
-There  is no way to look at this and not conclude that **we don't have all the numbers**. Further, that the numbers we have have no context or are taken out of context.  I understand "I don't know" is not very re-assuring but neither is an incomplete picture, or guesswork.  I'll take "here are the numbers we have today and here are the ones we are working on but right now we don't know" over speculation (couched as fact) 100% of the time. 
-
 ## Final thoughts
+
+There  is no way to look at this and not conclude that **we don't have all the data**.  I understand "*I don't know*" is not very re-assuring but neither is an incomplete picture, or guesswork presented as anything other than that.  
+
+I'll take "*here are the numbers we have today and here are the ones we are working on but right now we don't know*" over speculation (couched as fact) 100% of the time. 
 
 I am in no way an expert in any of this but I understand numbers and trends and absent numbers without agenda, source, or speculation, I'll try to figure it out on my own.   I think looking at the data has helped me to appreciate the issues and ask better questions.  Isn't that what data is all about?
 
+If you want to look at the data yourself, I've put together a small repository to get you started using Python and Pandas.
 
-
-
+[Using Pandas to look at Pandemic Data](https://github.com/cldeluna/pandas_for_pandemic_data) on GitHub

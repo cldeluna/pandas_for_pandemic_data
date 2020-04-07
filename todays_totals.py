@@ -19,23 +19,6 @@ import os
 import re
 
 
-def load_flu_rates_2018_19():
-
-    # https://www.cdc.gov/flu/about/burden/2018-2019.html
-    # Estimated rates of influenza-associated disease outcomes,
-    # per 100,000, by age group — United States, 2018-2019 influenza season
-
-    fn = 'cdc_flu_rates_by_age_2018_2019.csv'
-
-    df_pastflu = df_from_csv(fn)
-
-    # df_pastflu['Illness rate Estimate'] = df_pastflu['Illness rate Estimate'].astype('float64')
-    # df_pastflu['Medical visit rate Estimate'] = df_pastflu['Medical visit rate Estimate'].astype('float64')
-    # df_pastflu['Hospitalization rate Estimate'] = df_pastflu['Hospitalization rate Estimate'].astype('float64')
-    # df_pastflu['Mortality rate Estimate'] = df_pastflu['Mortality rate Estimate'].astype('float64')
-
-    df_check(df_pastflu, "CDC Estimated rates of influenza-associated disease outcomes,per 100,000, by age group")
-
 def get_todays_date_utc():
     # from datetime import datetime, timezone
     # "%Y%m%d"  20200404
@@ -43,7 +26,15 @@ def get_todays_date_utc():
     # print(tdy)
     return tdy
 
+
 def find_file_in_dir(dir, fname, debug=False):
+    """
+    Given a file name and directory find the given file in the given directory
+    :param dir: directory to search for file fname
+    :param fname:  filename to find in given directory dir
+    :param debug:  optional parameter to print debugging statements
+    :return: a file object
+    """
 
     print(f"\tFUNCTION find_file_in_dir: Looking for file {fname} in directory: \n\t{dir}")
     found_file_name = ''
@@ -65,14 +56,15 @@ def find_file_in_dir(dir, fname, debug=False):
         print(f"\tReturning: {found_file_name}\n")
     else:
         print(f"\t****** WARNING FILE NOT FOUND: File {fname} *****")
+
     return found_file_name
 
 
 def df_from_csv(path):
     """
-    Create Pandas Data Frame from given Excel file
-    :param path:
-    :return:  Pandas Data Frame from Excel file
+    Create Pandas Data Frame from given CSV file (path to csv file)
+    :param path: path to CSV file
+    :return:  Pandas Data Frame from CSV file
     """
 
     try:
@@ -86,7 +78,13 @@ def df_from_csv(path):
     return data_frame
 
 
-def df_check(dfc, note="DATA FRAME CHECK", debug=False):
+def df_check(dfc, note="DATA FRAME CHECK"):
+    """
+    Run a report to the console (STDOUT) on information on a Pandas Data Frame
+    :param dfc: Pandas Data Frame to "check"
+    :param note: Used as a title
+    :return:  Nothing is returned, this is a print only function
+    """
 
     print(f"\n\n====================  DATA FRAME CHECK ====================")
     print(f"====================  {note} ====================\n")
@@ -101,12 +99,9 @@ def df_check(dfc, note="DATA FRAME CHECK", debug=False):
 
     print(f"\n== Column default data type: \n{dfc.dtypes}\n")
 
-    # Whitespace Check on Country_Region
-    # _ = df.loc[df.Country_Region.str.contains(r'\s$', regex=True)]
-
     print("\n== Number of MISSING values in each column:")
     print(dfc.isna().sum())
-    # print()
+
     print("\nSum all the columns in the Data Frame")
     print(dfc.sum())
 
@@ -115,58 +110,45 @@ def df_check(dfc, note="DATA FRAME CHECK", debug=False):
     dfc_num = dfc.select_dtypes(include=numerics)
     print(dfc_num.sum())
 
-    # print("\nValue Counts")
-    # print("\nCountry_Region")
-    # print(dfc.Country_Region.value_counts())
-    # print("\nProvince_State")
-    # print(dfc.Province_State.value_counts())
-
-
-    # print("Missing Country_Region data:")
-    # print(dfc['Country_Region'].isna().sum())
-    # print(dfc['Country_Region'].isnull().sum())
-    #
-    #
-    # print("Missing Province_State data:")
-    # print(dfc['Province_State'].isna().sum())
-    # print(dfc['Province_State'].isnull().sum())
-
     if len(dfc) == 0:
         print(f"WARNING:  Empty data frame. \nThere is no data for {note}\n")
 
 
 def main():
 
+    # Set these options to fully display a Pandas Data Frame (vs. the shortened display)
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.max_rows', None)
 
     #######################################################################
-    # ### DEFAULT WHO file is analyzed by default
+    # ### DEFAULT WHO DATA file is analyzed by default
 
     # If a new file path and name are provided with the -w option
     # then that file will be loaded into a Pandas data frame and analyzed
     # otherwise the default file from 6 April 2020 will which is included in the
     # repository will be analyzed.
-    if arguments.who_data_file:
-        who_default_datafile = arguments.who_data_file
-    else:
-        who_default_datafile = "WHO-COVID-19-global-data.csv"
 
-    df_who = df_from_csv(who_default_datafile)
-    df_check(df_who, f"WHO Data Frame from {who_default_datafile}")
+    if not arguments.today_csse:
+        if arguments.who_data_file:
+            who_default_datafile = arguments.who_data_file
+        else:
+            who_default_datafile = "WHO-COVID-19-global-data.csv"
 
-    if arguments.country_region:
-        print(f"\n\n========= Country Data for {arguments.country_region}")
-        # Mask Data Frame
-        df_country_bool = df_who['Country'] == arguments.country_region
-        df_country = df_who[df_country_bool]
-        df_check(df_country, f"{arguments.country_region}")
+        df_who = df_from_csv(who_default_datafile)
+        df_check(df_who, f"WHO Data Frame from {who_default_datafile}")
+
+        if arguments.country_region:
+            print(f"\n\n========= Country Data for {arguments.country_region}")
+            # Mask Data Frame
+            df_country_bool = df_who['Country'] == arguments.country_region
+            df_country = df_who[df_country_bool]
+            df_check(df_country, f"{arguments.country_region}")
 
 
     #######################################################################
-    ## Todays CSSE JHU data set
+    ## CSSE JHU DATA
     # This section of the script will look for todays daily file for analysis
-    # If todays is not found it will automaticaly look for yesterdaysn
+    # If today's' is not found it will automatically look for yesterdays date
     # Important:  The Path to the https://github.com/CSSEGISandData/COVID-19.git repository must be set.
     # It is assumed that the CSSE JHU repo will be cloned directly under this repository
 
@@ -216,13 +198,26 @@ def main():
 
 
     #######################################################################
+    # NEW YORK TIMES DATA
     if arguments.new_york_times:
         print(f"\n\n========= New York Times Data file from NYT GitHub Repo ")
         ny_state_data = os.path.join(".", "covid-19-data", "us-states.csv")
         dfnystate = df_from_csv(ny_state_data)
-        df_check(dfnystate, f"New York Times Data")
+        df_check(dfnystate, f"New York Times Data US ONLY")
 
+        # State
+        if arguments.province_state:
+            print(f"\n\n========= State Data for {arguments.province_state} ")
+            df_country_state_bool = dfnystate['state'] == arguments.province_state
+            df_country_state = dfnystate[df_country_state_bool]
+            df_check(df_country_state, f"{arguments.province_state}")
 
+        # FIPS
+        if arguments.fips:
+            print(f"\n\n========= FIPS County {arguments.fips} ")
+            df_fips_bool = dfnystate['fips'] == int(arguments.fips)
+            df_fips = dfnystate[df_fips_bool]
+            df_check(df_fips, f"{arguments.fips}")
 
 # Standard call to the main() function.
 if __name__ == '__main__':
