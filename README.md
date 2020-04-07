@@ -5,12 +5,10 @@ The script and supporting files in this repository are intended to show how the 
 I am going to recommend 3 data sets to "investigate":
 
 - [WHO](https://who.sprinklr.com/) (Download from 06 April 2020)
-
 - [CSSEGISandData on GitHub](https://github.com/CSSEGISandData)
-
 - [New York Times US Data GitHub Repository](https://github.com/nytimes/covid-19-data)
 
-  
+[Background](MyContext.md)
 
 ## WHO Data
 
