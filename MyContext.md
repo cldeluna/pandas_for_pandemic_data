@@ -51,8 +51,8 @@ Other (raw) data is available from:
 
 - [WHO](https://who.sprinklr.com/) 
   - Note the download icon on the lower right of the map
-- https://covidtracking.com/api
-  - This site offers and API and actually grades states on their data!!!
+- [The COVID Tracking Project](https://covidtracking.com/api) (The Atlantic)
+  - This site offers TESTING DATA!!, an API and actually grades states on their data!!!
 - [European Centre for Disease Prevention and Contro](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide)l
   - [European data in JSON!!!](https://opendata.ecdc.europa.eu/covid19/casedistribution/json/)
 - [New York Times US Data GitHub Repository](https://github.com/nytimes/covid-19-data)
